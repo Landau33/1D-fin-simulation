@@ -1,0 +1,28 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from fin import FinParams, build_uniform_nodes, default_k_of_T
+from solver import balance
+
+def main():
+    p = FinParams(length=0.1, total_node=50, T0=300.0, Ta=20.0, hc=100.0, D=0.005,
+                  error=1e-2, delta=3e-2, max_step=100000, print_step=1000)
+    nodes = build_uniform_nodes(p)
+    balance(nodes, p, k_of_T=default_k_of_T)
+
+    x = np.array([node.x for node in nodes])
+    T = np.array([node.T for node in nodes])
+
+    step = p.total_node // 10
+    for i in range(0, p.total_node, step):
+        print(f"node {i}, x={x[i]:.6f} m, T={T[i]:.2f} K")
+
+    plt.plot(x, T, color='blue', linewidth=0.5, marker='o', 
+                markersize=3, markerfacecolor='orange', markeredgecolor='black')
+    plt.xlabel("Position along the fin (m)")
+    plt.ylabel("Temperature (K)")
+    plt.title("Temperature Distribution")
+    plt.grid(True)
+    plt.show()
+
+if __name__ == "__main__":
+    main()
