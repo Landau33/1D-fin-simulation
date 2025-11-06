@@ -35,6 +35,8 @@ class FinParams:
     delta: float = 3e-2         # Convergence factor
     max_step: int = 100_000     # Maximum iteration steps
     print_step: int = 10000     # Print interval
+    kt_slope: float = (112.0 - 10.3) / (300.0 - 20.0)  # Slope dk/dT for thermal conductivity
+    kt_bias: float = 10.3 - kt_slope * 20.0
 
     def __post_init__(self):
         self.total_node += 1
@@ -47,14 +49,6 @@ class FinParams:
         perimeter  = pi * self.D
         area  = pi * (self.D**2) / 4.0
         return dx, perimeter, area
-
-
-def thermal_conductivity(T: float) -> float:
-    """
-    Obtaine k(T) by linear interpolation between (20,10.3) and (300,112)
-    """
-    return (1017.0/2800.0)*T + (85.0/28.0)
-
 
 def init_nodes(p: FinParams) -> List[Node]:
     """

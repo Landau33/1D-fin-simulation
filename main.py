@@ -10,16 +10,47 @@ Email: chris14658@naver.com
 
 import numpy as np
 import matplotlib.pyplot as plt
-from fin import FinParams, init_nodes, thermal_conductivity
-from solver import energy_balance
+import argparse
+from fin import FinParams, init_nodes
+from solver import residual_solver, picard_thomas_solver, newton_solver
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="1D Fin Heat Conduction Simulation")
+
+    parser.add_argument(
+        "--solver",
+        type=str,
+        choices=["residual", "picard", "newton"],
+        default="residual",
+        help="Select solver: residual | picard | newton (default: residual)"
+    )
+
+    return parser.parse_args()
 
 
 def main():
-    p = FinParams(length=0.1, total_node=50, T0=300.0, Ta=20.0, hc=100.0, D=0.005,
-                  error=1e-2, delta=1e-2, max_step=100000, print_step=10000)
+    args = parse_args()
+    p = FinParams(length=0.1, total_node=5000, T0=300.0, Ta=20.0, hc=100.0, D=0.005,
+                  error=1e-2, delta=3e-2, max_step=100000, print_step=0)
     nodes = init_nodes(p)
-    energy_balance(nodes, p, k_of_T=thermal_conductivity)
 
+    """
+    Choose one solver to run the simulation
+    1. Residual solver (slowest, easiest)
+    2. Picard-Thomas solver (moderate speed, moderate complexity)
+    3. Newton solver (fastest, most complex)
+    """
+    if args.solver == "residual":
+        print("Using Residual Solver...")
+        residual_solver(nodes, p)
+    elif args.solver == "picard":
+        print("Using Picard-Thomas Solver...")
+        picard_thomas_solver(nodes, p)
+    elif args.solver == "newton":
+        print("Using Newton Solver...")
+        newton_solver(nodes, p)
+    
     x = np.array([node.x for node in nodes])
     T = np.array([node.T for node in nodes])
 

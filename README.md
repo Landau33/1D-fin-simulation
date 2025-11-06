@@ -1,3 +1,4 @@
+Version: v0.1.1
 # 1D Fin Steady-State Heat Conduction Simulation
 
 ***This project was developed as an MA6801 course assignment at NTU for Fall 2025 (Semester 1).***
