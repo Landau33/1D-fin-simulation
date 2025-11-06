@@ -38,6 +38,7 @@ Thermal conductivity is interpolated from two user-specified points:
 $$
 k(T) = k_1 + (k_2 - k_1)\frac{T - T_1}{T_2 - T_1}
 $$
+
 ---
 
 ## Installation
@@ -61,16 +62,16 @@ FinParams(
     Ta=20.0,             # Ambient temperature (K)
     hc=100.0,            # Convection coefficient (W/m²·K)
     D=0.005,             # Fin diameter (m)
-    error=1e-2,          # Convergence tolerance for residual
-    delta=3e-2,          # Residual descent step
+    error=1e-2,          # Convergence threshold for energy balance
+    delta=3e-2,          # Convergence factor
     max_step=100000,     # Maximum iteration steps
-    print_step=1000      # Print residual every N steps
+    print_step=10000     # Print interval
 )
 ```
 The temperature-dependent thermal conductivity is defined inside the function:
 
 ```python
-def conductivity(T: float) -> float:
+def thermal_conductivity(T: float) -> float:
     return (1017.0/2800.0) * T + (85.0/28.0)
 ```
 
@@ -82,4 +83,29 @@ Run the simulation:
 
 ```bash
 python main.py
+```
+---
+
+## Expected Output
+
+```
+step=5000, max_energy=0.523505, pass=23/50
+step=10000, max_energy=0.176659, pass=17/50
+step=15000, max_energy=0.078757, pass=15/50
+step=20000, max_energy=0.039235, pass=19/50
+step=25000, max_energy=0.020725, pass=26/50
+step=30000, max_energy=0.011394, pass=39/50
+step=35000, max_energy=0.006512, pass=50/50
+
+node 0, x=0.000000 m, T=300.00 K
+node 5, x=0.010000 m, T=241.10 K
+node 10, x=0.020000 m, T=189.50 K
+node 15, x=0.030000 m, T=145.16 K
+node 20, x=0.040000 m, T=108.05 K
+node 25, x=0.050000 m, T=78.09 K
+node 30, x=0.060000 m, T=55.15 K
+node 35, x=0.070000 m, T=38.95 K
+node 40, x=0.080000 m, T=28.88 K
+node 45, x=0.090000 m, T=23.77 K
+node 50, x=0.100000 m, T=22.13 K
 ```
